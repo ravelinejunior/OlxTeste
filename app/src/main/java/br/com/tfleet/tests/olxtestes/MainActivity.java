@@ -3,26 +3,28 @@ package br.com.tfleet.tests.olxtestes;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
-    private YouTubePlayerView youTubePlayerView;
 
     //usar chave para inicializar player
     private static final String GOOGLE_API_KEY = "AIzaSyBtPOB3RZzRQjH9GAfe83IQleOqEWa8Bco";
     private YouTubePlayer.PlaybackEventListener playbackEventListener;
+    private YouTubePlayer.PlayerStateChangeListener playerStateChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        youTubePlayerView = findViewById(R.id.Youtube_view_id);
+        YouTubePlayerView youTubePlayerView = findViewById(R.id.Youtube_view_id);
         youTubePlayerView.initialize(GOOGLE_API_KEY, this );
 
         //carregar o playback de eventos de monitoramento de video
@@ -53,6 +55,36 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             }
         };
 
+        //verifica as mudanças no carregamento do video
+        playerStateChangeListener = new YouTubePlayer.PlayerStateChangeListener() {
+            @Override
+            public void onLoading() {
+                Toast.makeText(MainActivity.this, "Carregando.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLoaded(String s) {
+                Toast.makeText(MainActivity.this, "Carregado.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdStarted() {
+                Toast.makeText(MainActivity.this, "Anuncios inicializados.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onVideoStarted() {
+                Toast.makeText(MainActivity.this, "Video inicializado.", Toast.LENGTH_SHORT).show();            }
+
+            @Override
+            public void onVideoEnded() {
+                Toast.makeText(MainActivity.this, "Finalizado.", Toast.LENGTH_SHORT).show();            }
+
+            @Override
+            public void onError(YouTubePlayer.ErrorReason errorReason) {
+                Toast.makeText(MainActivity.this, "Erro: "+errorReason, Toast.LENGTH_SHORT).show();            }
+        };
+
     }
 
     @Override
@@ -70,8 +102,10 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             youTubePlayer.cuePlaylist("PLWz5rJ2EKKc9mxIBd0DRw9gwXuQshgmn2");
             //monitorando os eventos no video
             youTubePlayer.setPlaybackEventListener(playbackEventListener);
+            youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
         }else{
             youTubePlayer.setPlaybackEventListener(playbackEventListener);
+            youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
             Log.i("Restaurado","Estado do video: "+foiRestaurado);
         }
 
