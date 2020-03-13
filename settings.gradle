@@ -1,0 +1,2 @@
+rootProject.name='OlxTestes'
+include ':app'
