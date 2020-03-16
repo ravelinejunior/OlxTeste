@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Customizado" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#F44726</item>
+        <item name="colorPrimaryDark">#D32f2f</item>
+        <item name="colorAccent">#D32f2f</item>
+        <item name="background">@color/cinzaMedio</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

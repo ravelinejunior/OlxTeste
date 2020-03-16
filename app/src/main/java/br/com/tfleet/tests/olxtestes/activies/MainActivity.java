@@ -1,16 +1,18 @@
-package br.com.tfleet.tests.olxtestes;
+package br.com.tfleet.tests.olxtestes.activies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+
+import br.com.tfleet.tests.olxtestes.R;
 
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -115,6 +117,12 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
         Toast.makeText(getContext(), "Erro ao iniciar."+youTubeInitializationResult.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void acessarApi(View view){
+        Intent intent = new Intent(getContext(),YoutubeApiActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
      protected Context getContext(){

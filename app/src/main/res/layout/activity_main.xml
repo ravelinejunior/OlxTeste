@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activies.MainActivity">
 
     <view
         android:id="@+id/Youtube_view_id"
@@ -17,6 +17,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/botao_youtubeAPI"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="#BF0707"
+        android:onClick="acessarApi"
+        android:text="Youtube "
+        app:layout_constraintEnd_toEndOf="@+id/Youtube_view_id"
+        app:layout_constraintStart_toStartOf="@+id/Youtube_view_id"
+        app:layout_constraintTop_toBottomOf="@+id/Youtube_view_id" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
