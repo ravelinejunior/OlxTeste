@@ -17,17 +17,17 @@ import br.com.tfleet.tests.olxtestes.model.Video;
 
 public class AdapterYoutubeApi extends RecyclerView.Adapter<AdapterYoutubeApi.MyViewHolder> {
     private List<Video> videoList;
-    private Context context;
+    private Context c;
 
     public AdapterYoutubeApi(List<Video> videoList, Context context) {
         this.videoList = videoList;
-        this.context = context;
+        this.c = context;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_youtube_api,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_youtube_api,parent,false);
         return new AdapterYoutubeApi.MyViewHolder(view);
     }
 
@@ -36,8 +36,6 @@ public class AdapterYoutubeApi extends RecyclerView.Adapter<AdapterYoutubeApi.My
         Video videos = videoList.get(position);
         holder.tituloVideo.setText(videos.getTitulo());
         holder.descricaoVideo.setText(videos.getDescricao());
-
-
     }
 
     @Override

@@ -16,23 +16,22 @@ import java.util.List;
 
 public class YoutubeApiActivity extends AppCompatActivity {
     private RecyclerView recyclerViewYoutubeApi;
-    private List<Video> videoList;
+    private List<Video> videoList =  new ArrayList<>();;
+    private AdapterYoutubeApi adapterYoutubeApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube_api);
+        //elementos
+        recyclerViewYoutubeApi = findViewById(R.id.recyclerView_Youtubevideos_id);
+
         carregareElementos();
         recuperarVideos();
-
-        //conffigurar RecyclerView e Adapter
-        recyclerViewYoutubeApi = new RecyclerView(getContext());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        //configurar RecyclerView e Adapter
+        recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewYoutubeApi.setHasFixedSize(true);
-        recyclerViewYoutubeApi.setLayoutManager(layoutManager);
-
-
-        AdapterYoutubeApi adapterYoutubeApi = new AdapterYoutubeApi(videoList, getContext());
+        adapterYoutubeApi = new AdapterYoutubeApi(videoList, getContext());
         recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
 
 
@@ -43,9 +42,6 @@ public class YoutubeApiActivity extends AppCompatActivity {
         toolbar.setTitle("YouTube Api");
         setSupportActionBar(toolbar);
 
-        //elementos
-        recyclerViewYoutubeApi = findViewById(R.id.recyclerView_Youtubevideos_id);
-        videoList = new ArrayList<>();
 
     }
 
