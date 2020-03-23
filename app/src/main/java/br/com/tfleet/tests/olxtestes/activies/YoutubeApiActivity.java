@@ -1,5 +1,6 @@
 package br.com.tfleet.tests.olxtestes.activies;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,29 +11,59 @@ import br.com.tfleet.tests.olxtestes.model.Video;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class YoutubeApiActivity extends AppCompatActivity {
-    private RecyclerView recyclerViewYoutubeApi;
     private List<Video> videoList =  new ArrayList<>();;
-    private AdapterYoutubeApi adapterYoutubeApi;
+    private AdapterYoutubeApi adapterYoutubeApi = new AdapterYoutubeApi(videoList, getContext());
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube_api);
         //elementos
-        recyclerViewYoutubeApi = findViewById(R.id.recyclerView_Youtubevideos_id);
+        RecyclerView recyclerViewYoutubeApi = findViewById(R.id.recyclerView_Youtubevideos_id);
 
         carregareElementos();
         recuperarVideos();
         //configurar RecyclerView e Adapter
         recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewYoutubeApi.setHasFixedSize(true);
-        adapterYoutubeApi = new AdapterYoutubeApi(videoList, getContext());
         recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
+
+        //efeitos de clique no botao de pesquisa
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
 
     }
@@ -41,6 +72,7 @@ public class YoutubeApiActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_YoutubeApi);
         toolbar.setTitle("YouTube Api");
         setSupportActionBar(toolbar);
+        searchView = findViewById(R.id.pesquisaIcon_Youtube_id);
 
 
     }
@@ -88,4 +120,36 @@ public class YoutubeApiActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pesquisa,menu);
+
+        MenuItem item = menu.findItem(R.id.pesquisa_menu);
+        searchView.setMenuItem(item);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
