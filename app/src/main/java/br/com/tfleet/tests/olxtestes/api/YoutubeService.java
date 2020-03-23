@@ -17,6 +17,7 @@ public interface YoutubeService {
         &maxResults=50
         &key=AIzaSyBtPOB3RZzRQjH9GAfe83IQleOqEWa8Bco
         &channelId=UCTw4_Y7XXuorDLN5fdDWeIQ
+        &q=desnvolvimento+pessoal   ---- o mais serve como espaço
 
 
         TESTES - https://www.googleapis.com/youtube/v3/search?part=snippet&order=date&maxResults=50&key=AIzaSyBtPOB3RZzRQjH9GAfe83IQleOqEWa8Bco&channelId=UCTw4_Y7XXuorDLN5fdDWeIQ
@@ -28,6 +29,18 @@ public interface YoutubeService {
                                     @Query("order") String order,
                                     @Query("maxResults") String maxResults,
                                     @Query("key") String key,
-                                    @Query("channelId") String channelId
+                                    @Query("channelId") String channelId,
+                                    @Query("q") String q
                     );
+
+    //caso queira fazer uma pesquisa sem canal filtrado
+    @GET("search")
+    Call<Resultado> recuperarVideosPorRegiao(@Query("part") String part,
+                                    @Query("order") String order,
+                                    @Query("maxResults") String maxResults,
+                                    @Query("key") String key,
+                                    @Query("q") String q,
+                                    @Query("regionCode") String regionCode
+    );
+
 }

@@ -6,13 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import br.com.tfleet.tests.olxtestes.R;
 import br.com.tfleet.tests.olxtestes.adapters.AdapterYoutubeApi;
 import br.com.tfleet.tests.olxtestes.api.YoutubeService;
 import br.com.tfleet.tests.olxtestes.helper.YoutubeConfig;
+import br.com.tfleet.tests.olxtestes.listener.RecyclerItemClickListener;
 import br.com.tfleet.tests.olxtestes.model.Items;
 import br.com.tfleet.tests.olxtestes.model.Resultado;
-import br.com.tfleet.tests.olxtestes.model.Video;
 import br.com.tfleet.tests.olxtestes.services.RetrofitConfig;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +28,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -51,11 +55,12 @@ public class YoutubeApiActivity extends AppCompatActivity {
         carregareElementos();
         inicializacaoRetrofit();
 
-        //recuperar os videos
-        recuperarVideos();
+        //para inicializar todos os videos
+        recuperarVideos("");
 
-        //metodo de pesquisa
+        //metodo de pesquisa //recuperar os videos
         pesquisaGeral();
+
 
 
 
@@ -84,21 +89,21 @@ public class YoutubeApiActivity extends AppCompatActivity {
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-
+                //ativar voiceSearch no codigo
+                searchView.setVoiceSearch(true); //or false
             }
 
             @Override
             public void onSearchViewClosed() {
-
+                recuperarVideos("");
             }
         });
 
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
-                return false;
+                recuperarVideos(query);
+                return true;
             }
 
             @Override
@@ -112,18 +117,21 @@ public class YoutubeApiActivity extends AppCompatActivity {
         return YoutubeApiActivity.this;
     }
 
-    private void recuperarVideos(){
+    private void recuperarVideos(String pesquisa){
+
+        //criar String com formatação de espaço para digitação na pesquisa
+        String q = pesquisa.replaceAll(" ","+");
 
         //recuperando dadis via Webservice
         YoutubeService youtubeService = retrofit.create(YoutubeService.class);
         //Call<Resultado> resultadoCall = youtubeService.recuperarVideos(); MANEIRA ANTIGA
-        youtubeService.recuperarVideos(
+/*        youtubeService.recuperarVideos(
                 "snippet",
                 "date",
                 "20",
                 YoutubeConfig.GOOGLE_API_KEY,
-                YoutubeConfig.CANAL_ID
-
+                YoutubeConfig.CANAL_ID,
+                q
         ).enqueue(new Callback<Resultado>() {
             @Override
             public void onResponse(Call<Resultado> call, Response<Resultado> response) {
@@ -137,10 +145,6 @@ public class YoutubeApiActivity extends AppCompatActivity {
                     itemsList = resultado.getItems();
                     configurarRecyclerView();
 
-
-
-
-                    Log.i("Resultado","Resultado: "+resultado.getItems().get(0).getSnippet().getThumbnails().getMedium().getHeight());
                 }
 
             }
@@ -148,6 +152,27 @@ public class YoutubeApiActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Resultado> call, Throwable t) {
                 Log.i("Resultado","Resultado: "+call.request()+", "+t.getMessage());
+            }
+        });*/
+
+        youtubeService.recuperarVideosPorRegiao("snippet","date","50",YoutubeConfig.GOOGLE_API_KEY,q,"Br").enqueue(new Callback<Resultado>() {
+            @Override
+            public void onResponse(Call<Resultado> call, Response<Resultado> response) {
+                //VERIFICANDO SE A RESPOSTA DA CHAMADA TEVE SUCESSO
+                if (response.isSuccessful()){
+
+                    //recuperar o corpo de resultados
+                    resultado = response.body();
+                    //recuperar uma lista de valores de resultado
+                    itemsList = resultado.getItems();
+                    configurarRecyclerView();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Resultado> call, Throwable t) {
+                Toast.makeText(YoutubeApiActivity.this, "Erro "+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -162,8 +187,7 @@ public class YoutubeApiActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.pesquisa_menu);
         searchView.setMenuItem(item);
 
-        //ativar voiceSearch no codigo
-        searchView.setVoiceSearch(true); //or false
+
         return true;
     }
 
@@ -178,6 +202,35 @@ public class YoutubeApiActivity extends AppCompatActivity {
         recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewYoutubeApi.setHasFixedSize(true);
         recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
+
+        //configurar eventos de clique
+        recyclerViewYoutubeApi.addOnItemTouchListener(new RecyclerItemClickListener(
+                getContext(), recyclerViewYoutubeApi, new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Items videoItems = itemsList.get(position);
+                    String idVideo = videoItems.getId().getVideoId();
+                    //passar valores de item para nova activity
+                    Intent i  = new Intent(getContext(), PlayerActivity.class);
+                    i.putExtra("VideoId",idVideo);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+
+                }
+
+                @Override
+                public void onLongItemClick(View view, int position) {
+
+                }
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            }
+                 )
+            {
+        });
     }
 
 
