@@ -1,6 +1,7 @@
 package br.com.tfleet.tests.olxtestes.activies;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,7 +11,11 @@ import br.com.tfleet.tests.olxtestes.adapters.AdapterYoutubeApi;
 import br.com.tfleet.tests.olxtestes.model.Video;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -38,6 +43,26 @@ public class YoutubeApiActivity extends AppCompatActivity {
         recyclerViewYoutubeApi.setHasFixedSize(true);
         recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
 
+        //metodo de pesquisa
+        pesquisaGeral();
+
+
+
+
+    }
+
+    private void carregareElementos(){
+        Toolbar toolbar = findViewById(R.id.toolbar_YoutubeApi);
+        toolbar.setTitle("YouTube Api");
+        setSupportActionBar(toolbar);
+        searchView = findViewById(R.id.pesquisaIcon_Youtube_id);
+
+
+    }
+
+    public void pesquisaGeral(){
+
+
         //efeitos de clique no botao de pesquisa
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
@@ -64,17 +89,6 @@ public class YoutubeApiActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-    }
-
-    private void carregareElementos(){
-        Toolbar toolbar = findViewById(R.id.toolbar_YoutubeApi);
-        toolbar.setTitle("YouTube Api");
-        setSupportActionBar(toolbar);
-        searchView = findViewById(R.id.pesquisaIcon_Youtube_id);
-
-
     }
 
     public Context getContext(){
@@ -127,6 +141,9 @@ public class YoutubeApiActivity extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.pesquisa_menu);
         searchView.setMenuItem(item);
+
+        //ativar voiceSearch no codigo
+        searchView.setVoiceSearch(true); //or false
         return true;
     }
 
@@ -134,6 +151,23 @@ public class YoutubeApiActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0) {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd)) {
+                    searchView.setQuery(searchWrd, false);
+                    Log.i("Pesquisa",searchWrd);
+                }
+            }
+
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);    }
 }
 
 
