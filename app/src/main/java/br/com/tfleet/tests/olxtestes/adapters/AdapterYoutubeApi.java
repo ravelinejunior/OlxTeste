@@ -1,6 +1,7 @@
 package br.com.tfleet.tests.olxtestes.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,14 @@ import androidx.annotation.NonNull;
 
 import androidx.recyclerview.widget.RecyclerView;
 import br.com.tfleet.tests.olxtestes.R;
+import br.com.tfleet.tests.olxtestes.model.Items;
 import br.com.tfleet.tests.olxtestes.model.Video;
 
 public class AdapterYoutubeApi extends RecyclerView.Adapter<AdapterYoutubeApi.MyViewHolder> {
-    private List<Video> videoList;
+    private List<Items> videoList;
     private Context c;
 
-    public AdapterYoutubeApi(List<Video> videoList, Context context) {
+    public AdapterYoutubeApi(List<Items> videoList, Context context) {
         this.videoList = videoList;
         this.c = context;
     }
@@ -33,9 +35,10 @@ public class AdapterYoutubeApi extends RecyclerView.Adapter<AdapterYoutubeApi.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Video videos = videoList.get(position);
-        holder.tituloVideo.setText(videos.getTitulo());
-        holder.descricaoVideo.setText(videos.getDescricao());
+        Items videos = videoList.get(position);
+        holder.capa.setImageURI(Uri.parse(videos.getSnippet().getThumbnails().getHigh().getUrl()));
+        holder.tituloVideo.setText(videos.getSnippet().getTitle());
+        holder.descricaoVideo.setText(videos.getSnippet().getDescription());
     }
 
     @Override
