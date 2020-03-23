@@ -8,7 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import br.com.tfleet.tests.olxtestes.R;
 import br.com.tfleet.tests.olxtestes.adapters.AdapterYoutubeApi;
+import br.com.tfleet.tests.olxtestes.api.YoutubeService;
+import br.com.tfleet.tests.olxtestes.helper.YoutubeConfig;
+import br.com.tfleet.tests.olxtestes.model.Resultado;
 import br.com.tfleet.tests.olxtestes.model.Video;
+import br.com.tfleet.tests.olxtestes.services.RetrofitConfig;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +36,7 @@ public class YoutubeApiActivity extends AppCompatActivity {
     private List<Video> videoList =  new ArrayList<>();;
     private AdapterYoutubeApi adapterYoutubeApi = new AdapterYoutubeApi(videoList, getContext());
     private MaterialSearchView searchView;
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,10 @@ public class YoutubeApiActivity extends AppCompatActivity {
         RecyclerView recyclerViewYoutubeApi = findViewById(R.id.recyclerView_Youtubevideos_id);
 
         carregareElementos();
+        inicializacaoRetrofit();
+
+
+
         recuperarVideos();
         //configurar RecyclerView e Adapter
         recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -58,6 +71,10 @@ public class YoutubeApiActivity extends AppCompatActivity {
         searchView = findViewById(R.id.pesquisaIcon_Youtube_id);
 
 
+    }
+
+    public void inicializacaoRetrofit(){
+        retrofit = RetrofitConfig.getRetrofit();
     }
 
     public void pesquisaGeral(){
@@ -130,6 +147,28 @@ public class YoutubeApiActivity extends AppCompatActivity {
         video7.setTitulo("Video teste Api 7");
         video7.setDescricao("Video de teste para reproducção de um teste");
         videoList.add(video7);
+
+        //recuperando dadis via Webservice
+        YoutubeService youtubeService = retrofit.create(YoutubeService.class);
+        //Call<Resultado> resultadoCall = youtubeService.recuperarVideos(); MANEIRA ANTIGA
+        youtubeService.recuperarVideos(
+                "snippet",
+                "date",
+                "20",
+                YoutubeConfig.GOOGLE_API_KEY,
+                YoutubeConfig.CANAL_ID
+
+        ).enqueue(new Callback<Resultado>() {
+            @Override
+            public void onResponse(Call<Resultado> call, Response<Resultado> response) {
+                Log.i("Resultado","Resultado: "+response.toString()+" call: "+call.request());
+            }
+
+            @Override
+            public void onFailure(Call<Resultado> call, Throwable t) {
+                Log.i("Resultado","Resultado: "+call.request()+", "+t.getMessage());
+            }
+        });
 
 
 
