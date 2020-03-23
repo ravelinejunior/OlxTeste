@@ -56,7 +56,7 @@ public class YoutubeApiActivity extends AppCompatActivity {
         inicializacaoRetrofit();
 
         //para inicializar todos os videos
-        recuperarVideos("");
+        recuperarVideos("Dicionario do programador");
 
         //metodo de pesquisa //recuperar os videos
         pesquisaGeral();
