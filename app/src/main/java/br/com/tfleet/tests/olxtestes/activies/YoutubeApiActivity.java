@@ -47,9 +47,11 @@ public class YoutubeApiActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube_api);
-        
+
         carregareElementos();
         inicializacaoRetrofit();
+
+        //recuperar os videos
         recuperarVideos();
 
         //metodo de pesquisa
@@ -133,12 +135,8 @@ public class YoutubeApiActivity extends AppCompatActivity {
                     resultado = response.body();
                     //recuperar uma lista de valores de resultado
                     itemsList = resultado.getItems();
+                    configurarRecyclerView();
 
-                    adapterYoutubeApi = new AdapterYoutubeApi(itemsList,getContext());
-                   // recyclerViewYoutubeApi = new RecyclerView(getContext());
-                    recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerViewYoutubeApi.setHasFixedSize(true);
-                    recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
 
 
 
@@ -172,6 +170,14 @@ public class YoutubeApiActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    public void configurarRecyclerView(){
+
+        adapterYoutubeApi = new AdapterYoutubeApi(itemsList,getContext());
+        recyclerViewYoutubeApi.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewYoutubeApi.setHasFixedSize(true);
+        recyclerViewYoutubeApi.setAdapter(adapterYoutubeApi);
     }
 
 

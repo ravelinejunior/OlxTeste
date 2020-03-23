@@ -13,6 +13,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
 import br.com.tfleet.tests.olxtestes.R;
 import br.com.tfleet.tests.olxtestes.model.Items;
 import br.com.tfleet.tests.olxtestes.model.Video;
@@ -36,9 +39,12 @@ public class AdapterYoutubeApi extends RecyclerView.Adapter<AdapterYoutubeApi.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Items videos = videoList.get(position);
-        holder.capa.setImageURI(Uri.parse(videos.getSnippet().getThumbnails().getHigh().getUrl()));
+        String urlImagem = videos.getSnippet().getThumbnails().getHigh().getUrl();
+        Picasso.get().load(urlImagem).fit().into(holder.capa);
         holder.tituloVideo.setText(videos.getSnippet().getTitle());
         holder.descricaoVideo.setText(videos.getSnippet().getDescription());
+
+
     }
 
     @Override
